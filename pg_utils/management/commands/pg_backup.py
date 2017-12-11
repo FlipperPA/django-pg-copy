@@ -1,5 +1,5 @@
 import datetime
-from os import environ, system
+import os
 
 from django.conf import settings
 
@@ -37,9 +37,13 @@ def command(database, filename):
             filename=filename,
         )
     )
+    # Make sure the backup path exists
+    backup_path = get_backup_path()
+    if not os.path.exists(backup_path):
+        os.makedirs(backup_path)
 
-    environ["PGPASSWORD"] = settings.DATABASES[database]['PASSWORD']
-    system(
+    os.environ["PGPASSWORD"] = settings.DATABASES[database]['PASSWORD']
+    os.system(
         'pg_dump -h {host} -U {username} --format=c --file={filename} {database}'.format(
             host=settings.DATABASES[database]['HOST'],
             username=settings.DATABASES[database]['USER'],
