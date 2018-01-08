@@ -10,7 +10,7 @@ setup(
     packages=find_packages(),
     zip_safe=False,
     install_requires=[
-        'django-click',
+        'Django',
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',
