@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 setup(
     name='django-pg-utils',
-    version="0.1dev",
+    version="0.1",
     description='',
     author='Tim Allen',
     author_email='tallen@wharton.upenn.edu',
