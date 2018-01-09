@@ -12,7 +12,7 @@ def get_backup_path():
         settings,
         'PG_UTILS_BACKUP_PATH',
         os.path.join(
-            os.path.dirname(os.path.realpath(__file__)),
+            os.getcwd(),
             'db_backup',
         )
     )
