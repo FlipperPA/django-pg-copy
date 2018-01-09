@@ -76,11 +76,10 @@ def command(database, filename):
         os.environ["PGPASSWORD"] = settings.DATABASES[database]['PASSWORD']
 
         os.system(
-            'psql -h {host} -U {username} -d {db} -c "{command}"'.format(
+            'psql -h {host} -U {username} -d {db} -c "DROP OWNED BY {username};"'.format(
                 host=settings.DATABASES[database]['HOST'],
                 username=settings.DATABASES[database]['USER'],
                 db=settings.DATABASES[database]['NAME'],
-                command='DROP SCHEMA public CASCADE; CREATE SCHEMA public; GRANT ALL ON SCHEMA public TO postgres; GRANT ALL ON SCHEMA public TO public;',
             )
         )
 
