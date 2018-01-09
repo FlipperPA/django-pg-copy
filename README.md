@@ -2,9 +2,10 @@
 
 The package `django-pg-copy` provides Django management commands for backing up and restoring PostgreSQL databases. These were developed for copying production databases to development, to allow developers to share images with one another, or bring local development databases up to date.
 
-## Installation (Coming Soon)
+## Installation
 
-`pip install django-pg-copy`
+`pip install django-pg-copy` (Coming soon)
+`pip install git+https://github.com/FlipperPA/django-pg-copy.git` (For now)
 
 ## Settings
 
