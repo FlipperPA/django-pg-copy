@@ -74,8 +74,18 @@ def command(database, filename):
 
     if confirm == "yes":
         os.environ["PGPASSWORD"] = settings.DATABASES[database]['PASSWORD']
+
         os.system(
-            'pg_restore -h {host} -U {username} -d {db} -c --if-exists {file}'.format(
+            'psql -h {host} -U {username} -d {db} -c "{command}"'.format(
+                host=settings.DATABASES[database]['HOST'],
+                username=settings.DATABASES[database]['USER'],
+                db=settings.DATABASES[database]['NAME'],
+                command='DROP SCHEMA public CASCADE; CREATE SCHEMA public; GRANT ALL ON SCHEMA public TO postgres; GRANT ALL ON SCHEMA public TO public;',
+            )
+        )
+
+        os.system(
+            'pg_restore -c --if-exists -h {host} -U {username} -d {db} {file}'.format(
                 host=settings.DATABASES[database]['HOST'],
                 username=settings.DATABASES[database]['USER'],
                 db=settings.DATABASES[database]['NAME'],
