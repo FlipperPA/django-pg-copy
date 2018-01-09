@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 setup(
-    name='django-pg-utils',
+    name='django-pg-copy',
     version="0.1",
     description='',
     author='Tim Allen',
     author_email='tallen@wharton.upenn.edu',
-    url='https://github.com/FlipperPA/django-pg-utils',
+    url='https://github.com/FlipperPA/django-pg-copy',
     include_package_data=True,
     packages=find_packages(),
     zip_safe=False,

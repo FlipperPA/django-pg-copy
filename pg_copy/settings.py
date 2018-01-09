@@ -10,7 +10,7 @@ def get_backup_path():
 
     return getattr(
         settings,
-        'PG_UTILS_BACKUP_PATH',
+        'PG_COPY_BACKUP_PATH',
         os.path.join(
             os.getcwd(),
             'db_backup',
