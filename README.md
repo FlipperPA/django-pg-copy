@@ -5,6 +5,7 @@ The package `django-pg-copy` provides Django management commands for backing up 
 ## Installation
 
 `pip install django-pg-copy` (Coming soon)
+
 `pip install git+https://github.com/FlipperPA/django-pg-copy.git` (For now)
 
 ## Settings
