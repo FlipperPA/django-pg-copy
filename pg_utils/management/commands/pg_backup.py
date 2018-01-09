@@ -44,7 +44,7 @@ def command(database, filename):
 
     os.environ["PGPASSWORD"] = settings.DATABASES[database]['PASSWORD']
     os.system(
-        'pg_dump -Fc -c -h {host} -U {username} --file={filename} {database}'.format(
+        'pg_dump -Fc -c -x -h {host} -U {username} --file={filename} {database}'.format(
             host=settings.DATABASES[database]['HOST'],
             username=settings.DATABASES[database]['USER'],
             database=settings.DATABASES[database]['NAME'],
