@@ -22,7 +22,7 @@ This command will create a backup in the same directory as `manage.py` called `m
 
 `python manage.py pg_backup`
 
-This command will create a backup in the directory `./db_backup/` (or the directory you specified with `PG_COPY_BACKUP_PATH`) called '[timestamp].sqlc` using the `default` settings from `DATABASES` using the default Django settings file resolved by `manage.py`.
+This command will create a backup in the directory `./db_backup/` (or the directory you specified with `PG_COPY_BACKUP_PATH`) called `[timestamp].sqlc` using the `default` settings from `DATABASES` using the default Django settings file resolved by `manage.py`.
 
 `python manage.py pg_restore`
 
