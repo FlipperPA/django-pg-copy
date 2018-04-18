@@ -4,13 +4,15 @@ The package `django-pg-copy` provides Django management commands for backing up 
 
 ## Installation
 
-`pip install git+https://github.com/FlipperPA/django-pg-copy.git` (For now)
+`pip install django-pg-copy`
 
-Then add `'pg_copy',` to your `INSTALLED_APPS` list.
+Then add `'pg_copy',` to your `INSTALLED_APPS` list. It is recommended that it is used in all environments (development, production) so that you can use it against different instances of your database.
 
 ## Settings
 
-`PG_COPY_BACKUP_PATH = 'db_backup'` By default, PostgreSQL backups will be stored in a directory called `db_backup` at the root of the project. This setting will override that location.
+`PG_COPY_BACKUP_PATH = 'db_backup'`
+
+By default, PostgreSQL backups will be stored in a directory called `db_backup` where you run the command. This setting will override that location.
 
 It is also recommended to add this path to your `.gitignore` file, if the path falls under your version control repository.
 
