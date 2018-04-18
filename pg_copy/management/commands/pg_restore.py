@@ -91,6 +91,8 @@ def command(database, filename):
                 file=filename,
             )
         )
+
+        os.environ["PGPASSWORD"] = ''
     else:
         click.secho(
             'Bailing out; you did not type "yes".',
