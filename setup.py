@@ -1,8 +1,14 @@
 from setuptools import setup, find_packages
+
+with open('README.md') as f:
+    long_description = f.read()
+
 setup(
     name='django-pg-copy',
     version="0.1",
     description='',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     author='Tim Allen',
     author_email='tallen@wharton.upenn.edu',
     url='https://github.com/FlipperPA/django-pg-copy',
