@@ -51,3 +51,4 @@ def command(database, filename):
             filename=filename,
         )
     )
+    os.environ["PGPASSWORD"] = ''
