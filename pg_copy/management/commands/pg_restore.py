@@ -32,20 +32,20 @@ from ...settings import get_backup_path
     help='A value to override the host argument sent to psql.',
 )
 @click.option(
-    '--pghome',
-    'pghome',
+    '--pg-home',
+    'pg_home',
     default=None,
     help='The path to the PostgreSQL installation, if it is not on your path.',
 )
-def command(database, filename, db_override, host_override, pghome):
+def command(database, filename, db_override, host_override, pg_home):
     """
     Django management command to restore a PostgreSQL database.
     """
 
     db = db_override or settings.DATABASES[database]['NAME']
     host = host_override or settings.DATABASES[database]['HOST']
-    psql = os.path.join(pghome, 'bin', 'psql') if pghome else 'psql'
-    pg_restore = os.path.join(pghome, 'bin', 'pg_restore') if pghome else 'pg_restore'
+    psql = os.path.join(pg_home, 'bin', 'psql') if pg_home else 'psql'
+    pg_restore = os.path.join(pg_home, 'bin', 'pg_restore') if pg_home else 'pg_restore'
 
     if filename is None:
         backup_path = get_backup_path()
