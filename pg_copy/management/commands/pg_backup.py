@@ -1,9 +1,8 @@
 import datetime
 import os
 
-from django.conf import settings
-
 import djclick as click
+from django.conf import settings
 
 from ...settings import get_backup_path
 
@@ -25,16 +24,38 @@ from ...settings import get_backup_path
     ),
     help='The filename of the output backup file.',
 )
-def command(database, filename):
+@click.option(
+    '--db-override',
+    'db_override',
+    default=None,
+    help='A value to override the db argument sent to psql.',
+)
+@click.option(
+    '--host-override',
+    'host_override',
+    default=None,
+    help='A value to override the host argument sent to psql.',
+)
+@click.option(
+    '--pghome',
+    'pghome',
+    default=None,
+    help='The path to the PostgreSQL installation, if it is not on your path.',
+)
+def command(database, filename, db_override, host_override, pghome):
     """
     Django management command to make a backup of a PostgreSQL database.
     """
 
+    db = db_override or settings.DATABASES[database]['NAME']
+    host = host_override or settings.DATABASES[database]['HOST']
+    pg_dump = os.path.join(pghome, 'bin', 'pg_dump') if pghome else 'pg_dump'
+
     click.secho(
-        "Backing up the database '{database}' on host '{host}' to file '{filename}'...".format(
-            database=settings.DATABASES[database]['NAME'],
-            host=settings.DATABASES[database]['HOST'],
-            filename=filename,
+        "Backing up database '{database}' on host '{host}' to file '{file}'...".format(
+            database=db,
+            host=host,
+            file=filename,
         )
     )
     # Make sure the backup path exists
@@ -44,11 +65,12 @@ def command(database, filename):
 
     os.environ["PGPASSWORD"] = settings.DATABASES[database]['PASSWORD']
     os.system(
-        'pg_dump -Fc -c -x -h {host} -U {username} --file={filename} {database}'.format(
-            host=settings.DATABASES[database]['HOST'],
+        '{pg_dump} -Fc -c -x -h {host} -U {username} --file={file} {database}'.format(
+            pg_dump=pg_dump,
+            host=host,
             username=settings.DATABASES[database]['USER'],
-            database=settings.DATABASES[database]['NAME'],
-            filename=filename,
+            database=db,
+            file=filename,
         )
     )
     os.environ["PGPASSWORD"] = ''
