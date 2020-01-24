@@ -37,7 +37,13 @@ from ...settings import get_backup_path
     default=None,
     help='The path to the PostgreSQL installation, if it is not on your path.',
 )
-def command(database, filename, db_override, host_override, pg_home):
+@click.option(
+    "--no-confirm",
+    "no_confirm",
+    is_flag=True,
+    help="Publishes without confirmation: be careful!",
+)
+def command(database, filename, db_override, host_override, pg_home, no_confirm):
     """
     Django management command to restore a PostgreSQL database.
     """
@@ -85,18 +91,21 @@ def command(database, filename, db_override, host_override, pg_home):
     if not os.path.isfile(filename):
         raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), filename)
 
-    click.secho(
-        "About to restore '{db}' on host '{host}' from the file '{file}'. "
-        "THIS WILL OVERWRITE THE DATABASE.".format(
-            db=db,
-            host=host,
-            file=filename,
-        ),
-        fg="red",
-        bold=True,
-    )
+    if no_confirm:
+        confirm = "yes"
+    else:
+        click.secho(
+            "About to restore '{db}' on host '{host}' from the file '{file}'. "
+            "THIS WILL OVERWRITE THE DATABASE.".format(
+                db=db,
+                host=host,
+                file=filename,
+            ),
+            fg="red",
+            bold=True,
+        )
 
-    confirm = click.prompt('Type "yes" to start the restore', default='no')
+        confirm = click.prompt('Type "yes" to start the restore', default='no')
 
     if confirm == "yes":
         os.environ["PGPASSWORD"] = settings.DATABASES[database]['PASSWORD']
