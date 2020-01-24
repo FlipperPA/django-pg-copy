@@ -15,11 +15,6 @@ from ...settings import get_backup_path
     help='The database defined in the DATABASES settings to backup.',
 )
 @click.option(
-    '--file',
-    'filename',
-    help='The filename of the input backup file to restore.',
-)
-@click.option(
     '--db-override',
     'db_override',
     default=None,
@@ -38,12 +33,17 @@ from ...settings import get_backup_path
     help='The path to the PostgreSQL installation, if it is not on your path.',
 )
 @click.option(
+    '--file',
+    'filename',
+    help='The filename of the input backup file to restore.',
+)
+@click.option(
     "--no-confirm",
     "no_confirm",
     is_flag=True,
-    help="Publishes without confirmation: be careful!",
+    help="Restores the database without confirmation: be careful!",
 )
-def command(database, filename, db_override, host_override, pg_home, no_confirm):
+def command(database, db_override, host_override, pg_home, filename, no_confirm):
     """
     Django management command to restore a PostgreSQL database.
     """

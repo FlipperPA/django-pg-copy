@@ -18,6 +18,14 @@ By default, PostgreSQL backups will be stored in a directory called `db_backup` 
 
 It is also recommended to add this path to your `.gitignore` file, if the path falls under your version control repository.
 
+## Parameters
+
+* `--file [TEXT]`: The filename of the input backup file to restore.
+* `--db-override [TEXT]`: A value to override the db argument sent to psql.
+* `--host-override [TEXT]`: A value to override the host argument sent to psql.
+* `--pg-home [TEXT]`: The path to the PostgreSQL installation, if it is not on your path.
+* `--no-confirm`: Restores the database without confirmation: be careful!
+
 ## Example Commands
 
 `python manage.py pg_backup --settings=config.settings.production --database=default --filename=my_backup.sqlc`
@@ -32,7 +40,7 @@ This command will create a backup in the directory `./db_backup/` (or the direct
 
 This command will provide a list of backup files in `PG_COPY_BACKUP_PATH` that can be restored. After selecting a backup file, it will confirm that the user wants to overwrite the destination database by showing which server and database will be overwritten from the settings.
 
-`python manage.py pg_restore --filename=my_file.sqlc`
+`python manage.py pg_restore --filename=my_file.sqlc --no-confirm`
 
 This command will read the file `my_file.sqlc` and confirm that the user wants to overwrite the destination database by showing which server and database will be overwritten from the settings.
 
@@ -40,6 +48,12 @@ This command will read the file `my_file.sqlc` and confirm that the user wants t
 
 * When restoring, PostgreSQL's `pg_restore` command will output some warnings. I haven't figured out a command line option to make these warnings disappear, but they can be safely ignored if you read them. TODO: include a paste of the output here.
 
+## Release Notes
+
+* 0.2: 
+* 0.1: Initial release.
+
 ## Contributors
 
 * Timothy Allen (https://github.com/FlipperPA)
+* Ryan Sullivan (https://github.com/rgs258)
