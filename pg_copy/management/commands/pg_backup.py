@@ -9,53 +9,49 @@ from ...settings import get_backup_path
 
 @click.command()
 @click.option(
-    '--database',
-    'database',
-    default='default',
-    help='The database defined in the DATABASES settings to backup.',
+    "--database",
+    "database",
+    default="default",
+    help="The database defined in the DATABASES settings to backup.",
 )
 @click.option(
-    '--file',
-    'filename',
+    "--file",
+    "filename",
     default=datetime.datetime.now().strftime(
-        '{backup_path}/%Y-%m-%d-%H-%M-%S.sqlc'.format(
-            backup_path=get_backup_path(),
-        ),
+        "{backup_path}/%Y-%m-%d-%H-%M-%S.sqlc".format(backup_path=get_backup_path(),),
     ),
-    help='The filename of the output backup file.',
+    help="The filename of the output backup file.",
 )
 @click.option(
-    '--db-override',
-    'db_override',
+    "--db-override",
+    "db_override",
     default=None,
-    help='A value to override the db argument sent to psql.',
+    help="A value to override the db argument sent to psql.",
 )
 @click.option(
-    '--host-override',
-    'host_override',
+    "--host-override",
+    "host_override",
     default=None,
-    help='A value to override the host argument sent to psql.',
+    help="A value to override the host argument sent to psql.",
 )
 @click.option(
-    '--pghome',
-    'pghome',
+    "--pghome",
+    "pghome",
     default=None,
-    help='The path to the PostgreSQL installation, if it is not on your path.',
+    help="The path to the PostgreSQL installation, if it is not on your path.",
 )
 def command(database, filename, db_override, host_override, pghome):
     """
     Django management command to make a backup of a PostgreSQL database.
     """
 
-    db = db_override or settings.DATABASES[database]['NAME']
-    host = host_override or settings.DATABASES[database]['HOST']
-    pg_dump = os.path.join(pghome, 'bin', 'pg_dump') if pghome else 'pg_dump'
+    db = db_override or settings.DATABASES[database]["NAME"]
+    host = host_override or settings.DATABASES[database]["HOST"]
+    pg_dump = os.path.join(pghome, "bin", "pg_dump") if pghome else "pg_dump"
 
     click.secho(
         "Backing up database '{database}' on host '{host}' to file '{file}'...".format(
-            database=db,
-            host=host,
-            file=filename,
+            database=db, host=host, file=filename,
         )
     )
     # Make sure the backup path exists
@@ -63,14 +59,14 @@ def command(database, filename, db_override, host_override, pghome):
     if not os.path.exists(backup_path):
         os.makedirs(backup_path)
 
-    os.environ["PGPASSWORD"] = settings.DATABASES[database]['PASSWORD']
+    os.environ["PGPASSWORD"] = settings.DATABASES[database]["PASSWORD"]
     os.system(
-        '{pg_dump} -Fc -c -x -h {host} -U {username} --file={file} {database}'.format(
+        "{pg_dump} -Fc -c -x -h {host} -U {username} --file={file} {database}".format(
             pg_dump=pg_dump,
             host=host,
-            username=settings.DATABASES[database]['USER'],
+            username=settings.DATABASES[database]["USER"],
             database=db,
             file=filename,
         )
     )
-    os.environ["PGPASSWORD"] = ''
+    os.environ["PGPASSWORD"] = ""
