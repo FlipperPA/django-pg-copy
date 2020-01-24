@@ -24,7 +24,7 @@ It is also recommended to add this path to your `.gitignore` file, if the path f
 * `--db-override [TEXT]`: A value to override the db argument sent to psql.
 * `--host-override [TEXT]`: A value to override the host argument sent to psql.
 * `--pg-home [TEXT]`: The path to the PostgreSQL installation, if it is not on your path.
-* `--file [TEXT]`: The filename of the input backup file to restore.
+* `--file [TEXT]`: The filename to backup to, or restore from.
 * `--no-confirm`: Restores the database without confirmation: be careful! (**pg_restore** only)
 
 ## Example Commands
@@ -51,7 +51,7 @@ This command will read the file `my_file.sqlc` and confirm that the user wants t
 
 ## Release Notes
 
-* 0.2: 
+* 0.2: Added new command line options: `--db-override`, `--host-override`, `--pg-home`, `--no-confirm`.
 * 0.1: Initial release.
 
 ## Contributors
