@@ -12,7 +12,7 @@ from ...settings import get_backup_path
     "--database",
     "database",
     default="default",
-    help="The database defined in the DATABASES settings to backup.",
+    help="The database defined in Django's DATABASES settings to restore to.",
 )
 @click.option(
     "--db-override",
