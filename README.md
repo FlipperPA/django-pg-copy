@@ -51,8 +51,8 @@ This command will read the file `my_file.sqlc` and confirm that the user wants t
 
 ## Release Notes
 
-* 0.2: Added new command line options: `--db-override`, `--host-override`, `--pg-home`, `--no-confirm`.
-* 0.1: Initial release.
+* 0.2.0: Added new command line options: `--db-override`, `--host-override`, `--pg-home`, `--no-confirm`.
+* 0.1.0: Initial release.
 
 ## Contributors
 
