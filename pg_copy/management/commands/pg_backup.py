@@ -73,10 +73,11 @@ def command(database, db_override, host_override, pg_home, filename, ignore_tabl
 
     os.environ["PGPASSWORD"] = settings.DATABASES[database]["PASSWORD"]
     os.system(
-        "{pg_dump} -Fc -c -x -h {host} -U {username} {ignore_cmds }--file={file} {database}".format(
+        "{pg_dump} -Fc -c -x -h {host} -U {username} {ignore_cmds}--file={file} {database}".format(
             pg_dump=pg_dump,
             host=host,
             username=settings.DATABASES[database]["USER"],
+            ignore_cmds=ignore_cmds,
             database=db,
             file=filename,
         )
