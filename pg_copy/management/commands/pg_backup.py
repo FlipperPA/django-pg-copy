@@ -40,7 +40,13 @@ from ...settings import get_backup_path
     ),
     help="The filename of the output backup file.",
 )
-def command(database, db_override, host_override, pg_home, filename):
+@click.option(
+    "--ignore-table",
+    "ignore_tables",
+    default=None,
+    help="comma separated list of tables to ignroe.",
+)
+def command(database, db_override, host_override, pg_home, filename, ignore_tables):
     """
     Django management command to make a backup of a PostgreSQL database.
     """
@@ -48,6 +54,12 @@ def command(database, db_override, host_override, pg_home, filename):
     db = db_override or settings.DATABASES[database]["NAME"]
     host = host_override or settings.DATABASES[database]["HOST"]
     pg_dump = os.path.join(pg_home, "bin", "pg_dump") if pg_home else "pg_dump"
+
+    if ignore_tables:
+        tables = ignore_tables.split(",")
+        ignore_cmds = " "
+        for table in tables:
+               ignore_cmds = ignore_cmds + "-T {} ".format(table)
 
     click.secho(
         "Backing up database '{database}' on host '{host}' to file '{file}'...".format(
@@ -61,7 +73,7 @@ def command(database, db_override, host_override, pg_home, filename):
 
     os.environ["PGPASSWORD"] = settings.DATABASES[database]["PASSWORD"]
     os.system(
-        "{pg_dump} -Fc -c -x -h {host} -U {username} --file={file} {database}".format(
+        "{pg_dump} -Fc -c -x -h {host} -U {username} {ignore_cmds }--file={file} {database}".format(
             pg_dump=pg_dump,
             host=host,
             username=settings.DATABASES[database]["USER"],
