@@ -41,7 +41,7 @@ from ...settings import get_backup_path
     help="The filename of the output backup file.",
 )
 @click.option(
-    "--ignore-table",
+    "--ignore-tables",
     "ignore_tables",
     default=None,
     help="comma separated list of tables to ignroe.",
