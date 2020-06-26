@@ -34,6 +34,7 @@ from ...settings import get_backup_path
 )
 @click.option(
     "--file",
+    "-f",
     "filename",
     default=datetime.datetime.now().strftime(
         "{backup_path}/%Y-%m-%d-%H-%M-%S.sqlc".format(backup_path=get_backup_path(),),

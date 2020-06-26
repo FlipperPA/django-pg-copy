@@ -20,11 +20,12 @@ It is also recommended to add this path to your `.gitignore` file, if the path f
 
 ## Parameters
 
-* `--database [TEXT]`: The database defined in the DATABASES settings to backup from or restore to.
-* `--db-override [TEXT]`: A value to override the db argument sent to psql.
-* `--host-override [TEXT]`: A value to override the host argument sent to psql.
-* `--pg-home [TEXT]`: The path to the PostgreSQL installation, if it is not on your path.
-* `--file [TEXT]`: The filename to backup to, or restore from.
+* `--database`: The database defined in the DATABASES settings to backup from or restore to.
+* `--db-override`: A value to override the db argument sent to psql.
+* `--host-override`: A value to override the host argument sent to psql.
+* `--pg-home`: The path to the PostgreSQL installation, if it is not on your path.
+* `--file`, `-f`: The filename to backup to, or restore from.
+* `--ignore-table`, `-i`: Do not include this table in the backup. Can pass multiple tables: `-i bigtable1 -i bigtable2`
 * `--no-confirm`: Restores the database without confirmation: be careful! (**pg_restore** only)
 
 ## Example Commands
@@ -36,6 +37,10 @@ This command will create a backup in the same directory as `manage.py` called `m
 `python manage.py pg_backup`
 
 This command will create a backup in the directory `./db_backup/` (or the directory you specified with `PG_COPY_BACKUP_PATH`) called `[timestamp].sqlc` using the `default` settings from `DATABASES` using the default Django settings file resolved by `manage.py`.
+
+`python manage.py pg_backup -i bigtable1 -i bigtable2`
+
+This will do the same as the previous command, but omit the tables named `bigtable1` and `bigtable2`.
 
 `python manage.py pg_restore`
 
@@ -51,8 +56,7 @@ This command will read the file `my_file.sqlc` and confirm that the user wants t
 
 ## Release Notes
 
-* 0.2.0: Added new command line options: `--db-override`, `--host-override`, `--pg-home`, `--no-confirm`.
-* 0.1.0: Initial release.
+[Release notes are available on GitHub](https://github.com/FlipperPA/django-pg-copy/releases)
 
 ## Contributors
 
