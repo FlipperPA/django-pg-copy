@@ -58,3 +58,4 @@ This command will read the file `my_file.sqlc` and confirm that the user wants t
 
 * Timothy Allen (https://github.com/FlipperPA)
 * Ryan Sullivan (https://github.com/rgs258)
+* Noel Victor (https://github.com/noeldvictor)

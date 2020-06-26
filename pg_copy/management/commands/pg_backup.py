@@ -42,6 +42,7 @@ from ...settings import get_backup_path
 )
 @click.option(
     "--ignore-table",
+    "-i",
     "ignore_table",
     multiple=True,
     default=[],
@@ -56,9 +57,12 @@ def command(database, db_override, host_override, pg_home, filename, ignore_tabl
     host = host_override or settings.DATABASES[database]["HOST"]
     pg_dump = os.path.join(pg_home, "bin", "pg_dump") if pg_home else "pg_dump"
 
-    ignore_table_cmd = " "
+    ignore_table_cmd = ""
     for table in ignore_table:
-        ignore_table_cmd  = ignore_table_cmd + "-T {} ".format(table)
+        ignore_table_cmd  = " -T {table}{ignore_table_cmd}".format(
+            table=table,
+            ignore_table_cmd=ignore_table_cmd,
+        )
 
     click.secho(
         "Backing up database '{database}' on host '{host}' to file '{file}'...".format(
@@ -76,7 +80,7 @@ def command(database, db_override, host_override, pg_home, filename, ignore_tabl
             pg_dump=pg_dump,
             host=host,
             username=settings.DATABASES[database]["USER"],
-            ignore_table_cmd =ignore_table_cmd ,
+            ignore_table_cmd=ignore_table_cmd,
             database=db,
             file=filename,
         )
