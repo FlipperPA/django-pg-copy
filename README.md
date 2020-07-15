@@ -70,7 +70,23 @@ This command will read the file `my_file.sqlc` and confirm that the user wants t
 
 ## Known Issues
 
-* When restoring, PostgreSQL's `pg_restore` command will output some warnings. I haven't figured out a command line option to make these warnings disappear, but they can be safely ignored if you read them. TODO: include a paste of the output here.
+#### Errors Displayed During `pg_restore`
+
+When restoring, PostgreSQL's `pg_restore` command will output some warnings. I haven't figured out a command line option to make these warnings disappear, but they can be safely ignored if you read them. Here is an example of what these errors may look like:
+
+```bash
+pg_restore: [archiver (db)] Error while PROCESSING TOC:
+pg_restore: [archiver (db)] Error from TOC entry 1; 3079 13792 EXTENSION plpgsql
+pg_restore: [archiver (db)] could not execute query: ERROR:  must be owner of extension plpgsql
+    Command was: DROP EXTENSION IF EXISTS plpgsql;
+
+pg_restore: [archiver (db)] Error from TOC entry 6; 2615 2200 SCHEMA public postgres
+pg_restore: [archiver (db)] could not execute query: ERROR:  must be owner of schema public
+    Command was: DROP SCHEMA IF EXISTS public;
+
+pg_restore: [archiver (db)] could not execute query: ERROR:  schema "public" already exists
+    Command was: CREATE SCHEMA public;
+```
 
 ## Release Notes
 
