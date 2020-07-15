@@ -89,7 +89,8 @@ def command(database, db_override, host_override, pg_home, filename, no_confirm)
         confirm = "yes"
     else:
         click.secho(
-            "About to restore '{db}' on host '{host}' from the file '{file}'. "
+            "About to restore '{db}' on host '{host}' from the file:\n"
+            "'{file}'\n"
             "THIS WILL OVERWRITE THE DATABASE.".format(
                 db=db, host=host, file=filename,
             ),
