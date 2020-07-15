@@ -58,7 +58,9 @@ There are 8 backup files in '/var/dev/username/django-project/db_backup'. Which 
 7: 2020-06-02-13-28-09.sqlc
 8: 2020-05-27-14-54-15.sqlc
 Enter number of the file to restore: 4
-About to restore 'django_project_db' on host 'localhost' from the file '/var/dev/username/django-project/db_backup/2020-07-14-15-21-22.sqlc'. THIS WILL OVERWRITE THE DATABASE.
+About to restore 'django_project_db' on host 'localhost' from the file:
+'/var/dev/username/django-project/db_backup/2020-07-14-15-21-22.sqlc'.
+THIS WILL OVERWRITE THE DATABASE.
 Type "yes" to start the restore [no]: yes
 ```
 
