@@ -44,7 +44,23 @@ This will do the same as the previous command, but omit the tables named `bigtab
 
 `python manage.py pg_restore`
 
-This command will provide a list of backup files in `PG_COPY_BACKUP_PATH` that can be restored. After selecting a backup file, it will confirm that the user wants to overwrite the destination database by showing which server and database will be overwritten from the settings.
+This command will provide a list of backup files in `PG_COPY_BACKUP_PATH` that can be restored. After selecting a backup file, it will confirm that the user wants to overwrite the destination database by showing which server and database will be overwritten from the settings. Here's what it will look like:
+
+```bash
+(venv) [django-project]$ ./manage.py pg_restore
+There are 8 backup files in '/var/dev/username/django-project/db_backup'. Which would you like to restore?
+1: 2020-05-27-13-33-38.sqlc
+2: 2020-05-10-09-07-45.sqlc
+3: 2020-05-11-13-05-49.sqlc
+4: 2020-07-14-15-21-22.sqlc
+5: 2020-05-15-08-31-59.sqlc
+6: 2020-06-11-13-11-00.sqlc
+7: 2020-06-02-13-28-09.sqlc
+8: 2020-05-27-14-54-15.sqlc
+Enter number of the file to restore: 4
+About to restore 'django_project_db' on host 'localhost' from the file '/var/dev/username/django-project/db_backup/2020-07-14-15-21-22.sqlc'. THIS WILL OVERWRITE THE DATABASE.
+Type "yes" to start the restore [no]: yes
+```
 
 `python manage.py pg_restore --filename=my_file.sqlc --no-confirm`
 
@@ -56,7 +72,7 @@ This command will read the file `my_file.sqlc` and confirm that the user wants t
 
 ## Release Notes
 
-[Release notes are available on GitHub](https://github.com/FlipperPA/django-pg-copy/releases)
+[Release notes are available on GitHub](https://github.com/FlipperPA/django-pg-copy/releases).
 
 ## Contributors
 
