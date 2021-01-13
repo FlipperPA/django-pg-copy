@@ -25,7 +25,8 @@ It is also recommended to add this path to your `.gitignore` file, if the path f
 * `--host-override`: A value to override the host argument sent to psql.
 * `--pg-home`: The path to the PostgreSQL installation, if it is not on your path.
 * `--file`, `-f`: The filename to backup to, or restore from.
-* `--ignore-table`, `-i`: Do not include this table in the backup. Can pass multiple tables: `-i bigtable1 -i bigtable2`
+* `--ignore-table`, `-i`: Excludes the table completely during the backup file creation. Can pass multiple tables: `-i bigtable1 -i bigtable2`
+* `--exclude-table-data`, `-e`: Excludes the table data during the backup file creation. Can pass multiple tables: `-e bigtable1 -e bigtable2`
 * `--no-confirm`: Restores the database without confirmation: be careful! (**pg_restore** only)
 
 ## Example Commands
@@ -41,6 +42,10 @@ This command will create a backup in the directory `./db_backup/` (or the direct
 `python manage.py pg_backup -i bigtable1 -i bigtable2`
 
 This will do the same as the previous command, but omit the tables named `bigtable1` and `bigtable2`.
+
+`python manage.py pg_backup -e bigtable1 -e bigtable2`
+
+This will do the same as the previous command, but include the table structure without any data for the tables named `bigtable1` and `bigtable2`.
 
 `python manage.py pg_restore`
 
@@ -91,9 +96,14 @@ pg_restore: [archiver (db)] could not execute query: ERROR:  schema "public" alr
 ## Release Notes
 
 [Release notes are available on GitHub](https://github.com/FlipperPA/django-pg-copy/releases).
+## Maintainer
+
+* [Timothy Allen](https://github.com/FlipperPA) at [The Wharton School](https://github.com/wharton)
+
+This package is maintained by the staff of [Wharton Research Data Services](https://wrds.wharton.upenn.edu/). We are thrilled that [The Wharton School](https://www.wharton.upenn.edu/) allows us a certain amount of time to contribute to open-source projects. We add features as they are necessary for our projects, and try to keep up with Issues and Pull Requests as best we can. Due to constraints of time (our full time jobs!), Feature Requests without a Pull Request may not be implemented, but we are always open to new ideas and grateful for contributions and our package users.
 
 ## Contributors
 
-* Timothy Allen (https://github.com/FlipperPA)
-* Ryan Sullivan (https://github.com/rgs258)
+* Alex Malek (https://github.com/amalek215)
 * Noel Victor (https://github.com/noeldvictor)
+* Ryan Sullivan (https://github.com/rgs258)
