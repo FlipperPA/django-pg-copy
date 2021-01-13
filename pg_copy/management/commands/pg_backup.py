@@ -47,7 +47,7 @@ from ...settings import get_backup_path
     "ignore_table",
     multiple=True,
     default=[],
-    help="Table/Schema to ignore during backup file creation.",
+    help="Excludes the table completely during the backup file creation.",
 )
 @click.option(
     "--exclude-table-data",
@@ -55,7 +55,7 @@ from ...settings import get_backup_path
     "exclude_table_data",
     multiple=True,
     default=[],
-    help="Do not dump data for any matching tables.",
+    help="Excludes the table data during the backup file creation.",
 )
 def command(database, db_override, host_override, pg_home, filename, ignore_table, exclude_table_data):
     """
