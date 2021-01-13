@@ -75,7 +75,7 @@ def command(database, db_override, host_override, pg_home, filename, ignore_tabl
 
     exclude_table_cmd = ""
     for table in exclude_table_data:
-        ignore_table_cmd  = " --exclude-table-data {table}{exclude_table_data}".format(
+        exclude_table_cmd = " --exclude-table-data {table}{exclude_table_cmd}".format(
             table=table,
             exclude_table_cmd=exclude_table_cmd,
         )
