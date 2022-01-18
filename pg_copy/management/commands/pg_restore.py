@@ -151,12 +151,14 @@ def command(
         try:
             subprocess.check_output(
                 f'{psql} -h {host} -U {settings.DATABASES[database]["USER"]} -d {db} '
-                f'-c "DROP OWNED BY {settings.DATABASES[database]["USER"]};"'
+                f'-c "DROP OWNED BY {settings.DATABASES[database]["USER"]};"',
+                shell=True,
             )
 
             subprocess.check_output(
                 f"{pg_restore} -c --if-exists -h {host} -d {db} --jobs {jobs} "
-                f"""-U {settings.DATABASES[database]["USER"]} {restore}"""
+                f"""-U {settings.DATABASES[database]["USER"]} {restore}""",
+                shell=True,
             )
         except subprocess.CalledProcessError as e:
             print(e)
