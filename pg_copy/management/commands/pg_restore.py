@@ -160,6 +160,7 @@ def command(
                 f"""-U {settings.DATABASES[database]["USER"]} {restore}""",
                 shell=True,
             )
+            click.secho("The database has been restored.", fg="green")
         except subprocess.CalledProcessError as e:
             print(e)
             sys.exit(e.returncode)
