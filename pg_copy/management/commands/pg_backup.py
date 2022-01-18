@@ -1,5 +1,7 @@
 import datetime
 import os
+import subprocess
+import sys
 
 import djclick as click
 from django.conf import settings
@@ -113,25 +115,26 @@ def command(
             f"Backing up database '{db}' on host '{host}' to directory '{directory}' "
             f"with {jobs} parallel processes..."
         )
+        backup = f"--format=directory --file={directory} --jobs={jobs}"
     else:
         click.secho(
             f"Backing up database '{db}' on host '{host}' to file '{filename}'..."
         )
+        backup = f"--format=custom --file={filename}"
+
     # Make sure the backup path exists
     backup_path = get_backup_path()
     if not os.path.exists(backup_path):
         os.makedirs(backup_path)
 
     os.environ["PGPASSWORD"] = settings.DATABASES[database]["PASSWORD"]
-    os.system(
-        "{pg_dump} -Fc -c -x -h {host} -U {username} {ignore_table_cmd} {exclude_table_cmd} --file={file} {database}".format(
-            pg_dump=pg_dump,
-            host=host,
-            username=settings.DATABASES[database]["USER"],
-            ignore_table_cmd=ignore_table_cmd,
-            exclude_table_cmd=exclude_table_cmd,
-            database=db,
-            file=filename,
+    try:
+        subprocess.check_output(
+            f"""{pg_dump} {backup} -c -x -U {settings.DATABASES[database]["USER"]} """
+            f"-h {host} {ignore_table_cmd} {exclude_table_cmd} {db}",
+            shell=True,
         )
-    )
+    except subprocess.CalledProcessError as e:
+        print(e)
+        sys.exit(e.returncode)
     os.environ["PGPASSWORD"] = ""

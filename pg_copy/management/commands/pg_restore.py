@@ -33,7 +33,24 @@ from ...settings import get_backup_path
     help="The path to the PostgreSQL installation, if it is not on your path.",
 )
 @click.option(
-    "--file", "filename", help="The filename of the input backup file to restore.",
+    "--file",
+    "filename",
+    help="The filename of the input backup file to restore.",
+)
+@click.option(
+    "--jobs",
+    "-j",
+    "jobs",
+    default=1,
+    help="How many parallel jobs to run. This can drastically increase execution speed,"
+    "and requires the --directory parameter to be used.",
+)
+@click.option(
+    "--directory",
+    "-d",
+    "directory",
+    default=None,
+    help="The directory to restore. Overrides the --file parameter.",
 )
 @click.option(
     "--no-confirm",
@@ -41,7 +58,9 @@ from ...settings import get_backup_path
     is_flag=True,
     help="Restores the database without confirmation: be careful!",
 )
-def command(database, db_override, host_override, pg_home, filename, no_confirm):
+def command(
+    database, db_override, host_override, pg_home, filename, jobs, directory, no_confirm
+):
     """
     Django management command to restore a PostgreSQL database.
     """
@@ -51,49 +70,73 @@ def command(database, db_override, host_override, pg_home, filename, no_confirm)
     psql = os.path.join(pg_home, "bin", "psql") if pg_home else "psql"
     pg_restore = os.path.join(pg_home, "bin", "pg_restore") if pg_home else "pg_restore"
 
-    if filename is None:
-        backup_path = get_backup_path()
-        backup_files = [
-            f
-            for f in os.listdir(backup_path)
-            if os.path.isfile(os.path.join(backup_path, f))
-        ]
-        num_backup_files = len(backup_files)
+    if directory:
+        if not os.path.isdir(directory):
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), directory)
 
-        if num_backup_files:
-            click.secho(
-                "There are {num} backup files in '{backup_path}'. "
-                "Which would you like to restore?".format(
-                    num=num_backup_files, backup_path=backup_path,
-                )
-            )
+        restore = f"--format=directory {directory}"
+    else:
+        if filename is None and directory is None:
+            backup_path = get_backup_path()
+            backup_files = [
+                f
+                for f in os.listdir(backup_path)
+                if os.path.isfile(os.path.join(backup_path, f))
+            ]
+            num_backup_files = len(backup_files)
 
-            for key, value in enumerate(backup_files, 1):
+            if num_backup_files:
                 click.secho(
-                    "{option_number}: {file}".format(option_number=key, file=value,)
+                    "There are {num} backup files in '{backup_path}'. "
+                    "Which would you like to restore?".format(
+                        num=num_backup_files,
+                        backup_path=backup_path,
+                    )
                 )
-            file_choice = click.prompt("Enter number of the file to restore", type=int)
-            filename = "{path}/{file}".format(
-                path=backup_path, file=backup_files[file_choice - 1],
-            )
-        else:
-            raise ValueError(
-                'No input file was provided by the "--file" parameter, and there are '
-                "no files in {backup_path}.".format(backup_path=backup_path,)
-            )
 
-    if not os.path.isfile(filename):
-        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), filename)
+                for key, value in enumerate(backup_files, 1):
+                    click.secho(
+                        "{option_number}: {file}".format(
+                            option_number=key,
+                            file=value,
+                        )
+                    )
+                file_choice = click.prompt(
+                    "Enter number of the file to restore", type=int
+                )
+                filename = "{path}/{file}".format(
+                    path=backup_path,
+                    file=backup_files[file_choice - 1],
+                )
+            else:
+                raise ValueError(
+                    'No input file was provided by the "--file" parameter, and there '
+                    "are no files in {backup_path}.".format(
+                        backup_path=backup_path,
+                    )
+                )
+
+        if not os.path.isfile(filename):
+            raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), filename)
+
+        restore = f"--format=custom {filename}"
 
     if no_confirm:
         confirm = "yes"
     else:
+        if directory:
+            message = (
+                f"About to restore '{db}' on host '{host}' from the directory:\n"
+                f"'{directory}'\n"
+            )
+        else:
+            message = (
+                f"About to restore '{db}' on host '{host}' from the file:\n"
+                f"'{filename}'\n"
+            )
+
         click.secho(
-            "About to restore '{db}' on host '{host}' from the file:\n"
-            "'{file}'\n"
-            "THIS WILL OVERWRITE THE DATABASE.".format(
-                db=db, host=host, file=filename,
-            ),
+            f"{message}THIS WILL OVERWRITE THE DATABASE.",
             fg="red",
             bold=True,
         )
@@ -104,23 +147,18 @@ def command(database, db_override, host_override, pg_home, filename, no_confirm)
         os.environ["PGPASSWORD"] = settings.DATABASES[database]["PASSWORD"]
 
         os.system(
-            '{psql} -h {host} -U {user} -d {db} -c "DROP OWNED BY {user};"'.format(
-                psql=psql, host=host, user=settings.DATABASES[database]["USER"], db=db,
-            )
+            f'{psql} -h {host} -U {settings.DATABASES[database]["USER"]} -d {db} -c '
+            f'"DROP OWNED BY {settings.DATABASES[database]["USER"]};"'
         )
 
         os.system(
-            "{pg_restore} -c --if-exists -h {host} -U {user} -d {db} {file}".format(
-                pg_restore=pg_restore,
-                host=host,
-                user=settings.DATABASES[database]["USER"],
-                db=db,
-                file=filename,
-            )
+            f"{pg_restore} -c --if-exists -h {host} -d {db} --jobs {jobs} "
+            f"""-U {settings.DATABASES[database]["USER"]} {restore}"""
         )
 
         os.environ["PGPASSWORD"] = ""
     else:
         click.secho(
-            'Bailing out; you did not type "yes".', fg="green",
+            'Bailing out; you did not type "yes".',
+            fg="green",
         )
