@@ -37,7 +37,9 @@ from ...settings import get_backup_path
     "-f",
     "filename",
     default=datetime.datetime.now().strftime(
-        "{backup_path}/%Y-%m-%d-%H-%M-%S.sqlc".format(backup_path=get_backup_path(),),
+        "{backup_path}/%Y-%m-%d-%H-%M-%S.sqlc".format(
+            backup_path=get_backup_path(),
+        ),
     ),
     help="The filename of the output backup file.",
 )
@@ -57,7 +59,36 @@ from ...settings import get_backup_path
     default=[],
     help="Excludes the table data during the backup file creation.",
 )
-def command(database, db_override, host_override, pg_home, filename, ignore_table, exclude_table_data):
+@click.option(
+    "--jobs",
+    "-j",
+    "jobs",
+    default=0,
+    help="How many parallel jobs to run. This can drastically increase execution speed,"
+    "and requires the --directory parameter to be used.",
+)
+@click.option(
+    "--directory",
+    "-d",
+    "directory",
+    default=datetime.datetime.now().strftime(
+        "{backup_path}/%Y-%m-%d-%H-%M-%S/".format(
+            backup_path=get_backup_path(),
+        ),
+    ),
+    help="The directory to backup to when the --jobs parameter is used.",
+)
+def command(
+    database,
+    db_override,
+    host_override,
+    pg_home,
+    filename,
+    ignore_table,
+    exclude_table_data,
+    jobs,
+    directory,
+):
     """
     Django management command to make a backup of a PostgreSQL database.
     """
@@ -68,23 +99,24 @@ def command(database, db_override, host_override, pg_home, filename, ignore_tabl
 
     ignore_table_cmd = ""
     for table in ignore_table:
-        ignore_table_cmd  = " -T {table}{ignore_table_cmd}".format(
+        ignore_table_cmd = " -T {table}{ignore_table_cmd}".format(
             table=table,
             ignore_table_cmd=ignore_table_cmd,
         )
 
     exclude_table_cmd = ""
     for table in exclude_table_data:
-        exclude_table_cmd = " --exclude-table-data {table}{exclude_table_cmd}".format(
-            table=table,
-            exclude_table_cmd=exclude_table_cmd,
-        )
+        exclude_table_cmd = f" --exclude-table-data {table}{exclude_table_cmd}"
 
-    click.secho(
-        "Backing up database '{database}' on host '{host}' to file '{file}'...".format(
-            database=db, host=host, file=filename,
+    if jobs:
+        click.secho(
+            f"Backing up database '{db}' on host '{host}' to directory '{directory}' "
+            f"with {jobs} parallel processes..."
         )
-    )
+    else:
+        click.secho(
+            f"Backing up database '{db}' on host '{host}' to file '{filename}'..."
+        )
     # Make sure the backup path exists
     backup_path = get_backup_path()
     if not os.path.exists(backup_path):
