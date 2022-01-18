@@ -1,5 +1,7 @@
 import errno
 import os
+import subprocess
+import sys
 
 import djclick as click
 from django.conf import settings
@@ -42,8 +44,8 @@ from ...settings import get_backup_path
     "-j",
     "jobs",
     default=1,
-    help="How many parallel jobs to run. This can drastically increase execution speed,"
-    "and requires the --directory parameter to be used.",
+    help="How many parallel jobs to run. This can drastically increase execution "
+    "speed.",
 )
 @click.option(
     "--directory",
@@ -146,19 +148,23 @@ def command(
     if confirm == "yes":
         os.environ["PGPASSWORD"] = settings.DATABASES[database]["PASSWORD"]
 
-        os.system(
-            f'{psql} -h {host} -U {settings.DATABASES[database]["USER"]} -d {db} -c '
-            f'"DROP OWNED BY {settings.DATABASES[database]["USER"]};"'
-        )
+        try:
+            subprocess.check_output(
+                f'{psql} -h {host} -U {settings.DATABASES[database]["USER"]} -d {db} '
+                f'-c "DROP OWNED BY {settings.DATABASES[database]["USER"]};"'
+            )
 
-        os.system(
-            f"{pg_restore} -c --if-exists -h {host} -d {db} --jobs {jobs} "
-            f"""-U {settings.DATABASES[database]["USER"]} {restore}"""
-        )
-
-        os.environ["PGPASSWORD"] = ""
+            subprocess.check_output(
+                f"{pg_restore} -c --if-exists -h {host} -d {db} --jobs {jobs} "
+                f"""-U {settings.DATABASES[database]["USER"]} {restore}"""
+            )
+        except subprocess.CalledProcessError as e:
+            print(e)
+            sys.exit(e.returncode)
+        finally:
+            os.environ["PGPASSWORD"] = ""
     else:
         click.secho(
-            'Bailing out; you did not type "yes".',
+            "Bailing out; you did not type 'yes'.",
             fg="green",
         )
