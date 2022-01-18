@@ -25,6 +25,8 @@ It is also recommended to add this path to your `.gitignore` file, if the path f
 * `--host-override`: A value to override the host argument sent to psql.
 * `--pg-home`: The path to the PostgreSQL installation, if it is not on your path.
 * `--file`, `-f`: The filename to backup to, or restore from.
+* `--jobs`, `-j`: The number of parallel jobs to run. This can *drastically* increase the speed of the backup and restore. When backing up, this must use the `--directory` option. *Be careful!* This will also create multiple database connections and can slow your database down.
+* `--directory`, `-d`: Restore from a directory. Overrides `--file` when used.
 * `--ignore-table`, `-i`: Excludes the table completely during the backup file creation. Can pass multiple tables: `-i bigtable1 -i bigtable2`
 * `--exclude-table-data`, `-e`: Excludes the table data during the backup file creation. Can pass multiple tables: `-e bigtable1 -e bigtable2`
 * `--no-confirm`: Restores the database without confirmation: be careful! (**pg_restore** only)
@@ -36,6 +38,12 @@ It is also recommended to add this path to your `.gitignore` file, if the path f
 This command will create a backup in the same directory as `manage.py` called `my_backup.sqlc` using the `default` settings from `DATABASES` using the Django settings file located at `config/settings/production.py`.
 
 `python manage.py pg_backup`
+
+This command will create a backup file in the directory `./db_backup/` (or the directory you specified with `PG_COPY_BACKUP_PATH`) called `[timestamp].sqlc` using the `default` settings from `DATABASES` using the default Django settings file resolved by `manage.py`.
+
+`python manage.py pg_backup --directory=/tmp/pg_backup --jobs=8`
+
+This command will create a backup directory at `/tmp/backup` use 8 parallel jobs and database connections.
 
 This command will create a backup in the directory `./db_backup/` (or the directory you specified with `PG_COPY_BACKUP_PATH`) called `[timestamp].sqlc` using the `default` settings from `DATABASES` using the default Django settings file resolved by `manage.py`.
 
@@ -71,7 +79,11 @@ Type "yes" to start the restore [no]: yes
 
 `python manage.py pg_restore --filename=my_file.sqlc --no-confirm`
 
-This command will read the file `my_file.sqlc` and confirm that the user wants to overwrite the destination database by showing which server and database will be overwritten from the settings.
+This command will read the file `my_file.sqlc` and **skip confirmation** that the user wants to overwrite the destination database.
+
+`python manage.py pg_restore --directory=/tmp/pg_backup --jobs=8`
+
+This command will restore from the directory `/tmp/pg_backup` using 8 parallel jobs and database connections.
 
 ## Known Issues
 
