@@ -131,7 +131,7 @@ def command(
     try:
         subprocess.check_output(
             f"""{pg_dump} {backup} -c -x -U {settings.DATABASES[database]["USER"]} """
-            f"-h {host} {ignore_table_cmd} {exclude_table_cmd} {db}",
+            f"--no-owner -h {host} {ignore_table_cmd} {exclude_table_cmd} {db}",
             shell=True,
         )
     except subprocess.CalledProcessError as e:
