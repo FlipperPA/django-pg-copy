@@ -89,7 +89,7 @@ This command will restore from the directory `/tmp/pg_backup` using 8 parallel j
 
 #### Errors Displayed During `pg_restore`
 
-When restoring, PostgreSQL's `pg_restore` command will output some warnings. I haven't figured out a command line option to make these warnings disappear, but they can be safely ignored if you read them. Here is an example of what these errors may look like:
+When restoring, PostgreSQL's `pg_restore` command may output some warnings and erorrs. I haven't figured out a command line option to make these warnings disappear, but they can likely be ignored if you read them. Here is an example of what these errors may look like:
 
 ```bash
 pg_restore: [archiver (db)] Error while PROCESSING TOC:
@@ -104,6 +104,8 @@ pg_restore: [archiver (db)] could not execute query: ERROR:  must be owner of sc
 pg_restore: [archiver (db)] could not execute query: ERROR:  schema "public" already exists
     Command was: CREATE SCHEMA public;
 ```
+
+These may be errors from extensions that aren't used, or warnings about default schemata that already exist.
 
 ## Release Notes
 
