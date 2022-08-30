@@ -156,7 +156,7 @@ def command(
             )
 
             subprocess.check_output(
-                f"{pg_restore} -c --if-exists -h {host} -d {db} --jobs {jobs} "
+                f"{pg_restore} -c -O -x --if-exists -h {host} -d {db} --jobs {jobs} "
                 f"""-U {settings.DATABASES[database]["USER"]} {restore}""",
                 shell=True,
             )

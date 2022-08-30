@@ -129,9 +129,15 @@ def command(
 
     os.environ["PGPASSWORD"] = settings.DATABASES[database]["PASSWORD"]
     try:
+        backup_command = (
+            f"""{pg_dump} {backup} -c -O -x -h {host} """
+            f"""-U {settings.DATABASES[database]["USER"]} """
+            f"{ignore_table_cmd} {exclude_table_cmd} {db}"
+        )
+
+        print(backup_command)
         subprocess.check_output(
-            f"""{pg_dump} {backup} -c -x -U {settings.DATABASES[database]["USER"]} """
-            f"-h {host} {ignore_table_cmd} {exclude_table_cmd} {db}",
+            backup_command,
             shell=True,
         )
     except subprocess.CalledProcessError as e:
