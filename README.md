@@ -33,19 +33,17 @@ It is also recommended to add this path to your `.gitignore` file, if the path f
 
 ## Example Commands
 
-`python manage.py pg_backup --settings=config.settings.production --database=default --filename=my_backup.sqlc`
-
-This command will create a backup in the same directory as `manage.py` called `my_backup.sqlc` using the `default` settings from `DATABASES` using the Django settings file located at `config/settings/production.py`.
-
 `python manage.py pg_backup`
 
 This command will create a backup file in the directory `./db_backup/` (or the directory you specified with `PG_COPY_BACKUP_PATH`) called `[timestamp].sqlc` using the `default` settings from `DATABASES` using the default Django settings file resolved by `manage.py`.
 
+`python manage.py pg_backup --settings=config.settings.production --database=default --filename=my_backup.sqlc`
+
+This command will create a backup in the same directory as `manage.py` called `my_backup.sqlc` using the `default` settings from `DATABASES` using the Django settings file located at `config/settings/production.py`.
+
 `python manage.py pg_backup --directory=/tmp/pg_backup --jobs=8`
 
 This command will create a backup directory at `/tmp/backup` use 8 parallel jobs and database connections.
-
-This command will create a backup in the directory `./db_backup/` (or the directory you specified with `PG_COPY_BACKUP_PATH`) called `[timestamp].sqlc` using the `default` settings from `DATABASES` using the default Django settings file resolved by `manage.py`.
 
 `python manage.py pg_backup -i bigtable1 -i bigtable2`
 
