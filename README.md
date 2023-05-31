@@ -27,9 +27,15 @@ It is also recommended to add this path to your `.gitignore` file, if the path f
 * `--file`, `-f`: The filename to backup to, or restore from.
 * `--jobs`, `-j`: The number of parallel jobs to run. This can *drastically* increase the speed of the backup and restore. When backing up, this must use the `--directory` option. *Be careful!* This will also create multiple database connections and can slow your database down.
 * `--directory`, `-d`: Restore from a directory. Overrides `--file` when used.
-* `--ignore-table`, `-i`: Excludes the table completely during the backup file creation. Can pass multiple tables: `-i bigtable1 -i bigtable2`
-* `--exclude-table-data`, `-e`: Excludes the table data during the backup file creation. Can pass multiple tables: `-e bigtable1 -e bigtable2`
-* `--no-confirm`: Restores the database without confirmation: be careful! (**pg_restore** only)
+
+### Backup Only Parameters for `pg_backup`
+
+* `--ignore-table`, `-i`: Excludes the table completely during the backup process. Can pass multiple tables: `-i bigtable1 -i bigtable2`
+* `--exclude-table-data`, `-e`: Excludes the table data during the backup process. Can pass multiple tables: `-e bigtable1 -e bigtable2`
+
+### Restore Only Parameters for `pg_restore`
+
+* `--no-confirm`: Restores the database without confirmation: be careful! DON'T OVERWRITE YOUR PROD DATABASE! (Ask me how I know.)
 
 ## Example Commands
 

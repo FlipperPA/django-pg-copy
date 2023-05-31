@@ -29,6 +29,12 @@ from ...settings import get_backup_path
     help="A value to override the host argument sent to psql.",
 )
 @click.option(
+    "--port-override",
+    "port_override",
+    default=None,
+    help="A value to override the port argument sent to psql.",
+)
+@click.option(
     "--pg-home",
     "pg_home",
     default=None,
@@ -84,6 +90,7 @@ def command(
     database,
     db_override,
     host_override,
+    port_override,
     pg_home,
     filename,
     ignore_table,
@@ -97,6 +104,7 @@ def command(
 
     db = db_override or settings.DATABASES[database]["NAME"]
     host = host_override or settings.DATABASES[database]["HOST"]
+    port = port_override or settings.DATABASES[database]["PORT"]
     pg_dump = os.path.join(pg_home, "bin", "pg_dump") if pg_home else "pg_dump"
 
     ignore_table_cmd = ""
@@ -130,7 +138,7 @@ def command(
     os.environ["PGPASSWORD"] = settings.DATABASES[database]["PASSWORD"]
     try:
         backup_command = (
-            f"""{pg_dump} {backup} -c -O -x -h {host} """
+            f"""{pg_dump} {backup} -c -O -x -h {host} -p {port} """
             f"""-U {settings.DATABASES[database]["USER"]} """
             f"{ignore_table_cmd} {exclude_table_cmd} {db}"
         )

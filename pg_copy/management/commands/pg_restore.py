@@ -29,6 +29,12 @@ from ...settings import get_backup_path
     help="A value to override the host argument sent to psql.",
 )
 @click.option(
+    "--port-override",
+    "port_override",
+    default=None,
+    help="A value to override the port argument sent to psql.",
+)
+@click.option(
     "--pg-home",
     "pg_home",
     default=None,
@@ -61,7 +67,15 @@ from ...settings import get_backup_path
     help="Restores the database without confirmation: be careful!",
 )
 def command(
-    database, db_override, host_override, pg_home, filename, jobs, directory, no_confirm
+    database,
+    db_override,
+    host_override,
+    port_override,
+    pg_home,
+    filename,
+    jobs,
+    directory,
+    no_confirm,
 ):
     """
     Django management command to restore a PostgreSQL database.
@@ -69,6 +83,7 @@ def command(
 
     db = db_override or settings.DATABASES[database]["NAME"]
     host = host_override or settings.DATABASES[database]["HOST"]
+    port = port_override or settings.DATABASES[database]["PORT"]
     psql = os.path.join(pg_home, "bin", "psql") if pg_home else "psql"
     pg_restore = os.path.join(pg_home, "bin", "pg_restore") if pg_home else "pg_restore"
 
@@ -128,12 +143,12 @@ def command(
     else:
         if directory:
             message = (
-                f"About to restore '{db}' on host '{host}' from the directory:\n"
+                f"About to restore '{db}' on host '{host}:{port}' from the directory:\n"
                 f"'{directory}'\n"
             )
         else:
             message = (
-                f"About to restore '{db}' on host '{host}' from the file:\n"
+                f"About to restore '{db}' on host '{host}:{port}' from the file:\n"
                 f"'{filename}'\n"
             )
 
@@ -143,7 +158,7 @@ def command(
             bold=True,
         )
 
-        confirm = click.prompt('Type "yes" to start the restore', default="no")
+        confirm = click.prompt("Type 'yes' to start the restore", default="no")
 
     if confirm == "yes":
         os.environ["PGPASSWORD"] = settings.DATABASES[database]["PASSWORD"]
@@ -151,13 +166,13 @@ def command(
         try:
             subprocess.check_output(
                 f'{psql} -h {host} -U {settings.DATABASES[database]["USER"]} -d {db} '
-                f'-c "DROP OWNED BY {settings.DATABASES[database]["USER"]};"',
+                f'-p {port} -c "DROP OWNED BY {settings.DATABASES[database]["USER"]};"',
                 shell=True,
             )
 
             subprocess.check_output(
                 f"{pg_restore} -c -O -x --if-exists -h {host} -d {db} --jobs {jobs} "
-                f"""-U {settings.DATABASES[database]["USER"]} {restore}""",
+                f"""-p {port} -U {settings.DATABASES[database]["USER"]} {restore}""",
                 shell=True,
             )
             click.secho("The database has been restored.", fg="green")
