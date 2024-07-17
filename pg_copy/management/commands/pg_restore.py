@@ -167,7 +167,7 @@ def command(
             subprocess.check_output(
                 f'{psql} -h {host} -U {settings.DATABASES[database]["USER"]} -d {db} '
                 f'-p {port} -c "SET ROLE {settings.DATABASES[database]["USER"]}; '
-                F'DROP OWNED BY {settings.DATABASES[database]["USER"]};"',
+                f'DROP OWNED BY {settings.DATABASES[database]["USER"]};"',
                 shell=True,
             )
 
