@@ -33,6 +33,13 @@ classifiers = [
 dependencies = ["django-click"]
 dynamic = ["version"]
 
+[project.optional-dependencies]
+dev = [
+  "ipython",
+  "ruff",
+  "pytest-coverage",
+]
+
 [project.urls]
 "Homepage" = "https://github.com/FlipperPA/django-pg-copy"
 "Repository" = "https://github.com/FlipperPA/django-pg-copy"
