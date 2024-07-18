@@ -104,7 +104,8 @@ def command(
 
     db = db_override or settings.DATABASES[database]["NAME"]
     host = host_override or settings.DATABASES[database]["HOST"]
-    port = port_override or settings.DATABASES[database]["PORT"]
+    port = port_override or settings.DATABASES[database].get("PORT", None)
+    port_cmd = f"-p {port}" if port else ""
     pg_dump = os.path.join(pg_home, "bin", "pg_dump") if pg_home else "pg_dump"
 
     ignore_table_cmd = ""
@@ -138,7 +139,7 @@ def command(
     os.environ["PGPASSWORD"] = settings.DATABASES[database]["PASSWORD"]
     try:
         backup_command = (
-            f"""{pg_dump} {backup} -c -O -x -h {host} -p {port} """
+            f"""{pg_dump} {backup} -c -O -x -h {host} {port_cmd} """
             f"""-U {settings.DATABASES[database]["USER"]} """
             f"{ignore_table_cmd} {exclude_table_cmd} {db}"
         )
