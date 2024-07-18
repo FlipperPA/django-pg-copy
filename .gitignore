@@ -1,7 +1,9 @@
 # Python
 *.py[co]
 *.egg*
-_verison.py
+_version.py
+dist/
+venv/
 
 # Logs:
 *.log
