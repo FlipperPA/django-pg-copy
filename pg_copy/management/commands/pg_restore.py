@@ -136,12 +136,12 @@ def command(
     else:
         if directory:
             message = (
-                f"About to restore '{db}' on host '{host}' from the directory:\n"
+                f"About to restore '{db}' on host '{host}:{port}' from the directory:\n"
                 f"'{directory}'\n"
             )
         else:
             message = (
-                f"About to restore '{db}' on host '{host}' from the file:\n"
+                f"About to restore '{db}' on host '{host}:{port}' from the file:\n"
                 f"'{filename}'\n"
             )
 
@@ -151,7 +151,7 @@ def command(
             bold=True,
         )
 
-        confirm = click.prompt('Type "yes" to start the restore', default="no")
+        confirm = click.prompt("Type 'yes' to start the restore", default="no")
 
     if confirm == "yes":
         os.environ["PGPASSWORD"] = settings.DATABASES[database]["PASSWORD"]
@@ -159,7 +159,8 @@ def command(
         try:
             subprocess.check_output(
                 f'{psql} -h {host} {port_cmd} -U {settings.DATABASES[database]["USER"]} -d {db} '
-                f'-c "DROP OWNED BY {settings.DATABASES[database]["USER"]};"',
+                f'-c "SET ROLE {settings.DATABASES[database]["USER"]}; '
+                f'DROP OWNED BY {settings.DATABASES[database]["USER"]};"',
                 shell=True,
             )
 

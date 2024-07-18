@@ -1,0 +1,23 @@
+{
+    "[python]": {
+        "editor.rulers": [88],
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        }
+    },
+    "python.defaultInterpreterPath": "./venv/bin/python3",
+    "ruff.lint.args": ["--config=./pyproject.toml"],
+    "editor.wordWrapColumn": 88,
+    "files.watcherExclude": {
+        "**/__pycache__/**": true,
+        "**/.git/**": true,
+        "**/.pytest_cache/**": true,
+        "**/media/**": true,
+        "**/node_modules/*/**": true,
+        "**/static/**": true,
+        "**/static_dev/**": true,
+        "**/venv/**": true
+    },
+}
