@@ -36,7 +36,7 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP",
     "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
 ]
-dependencies = ["django-click"]
+dependencies = ["Django", "django-click"]
 dynamic = ["version"]
 
 [project.optional-dependencies]

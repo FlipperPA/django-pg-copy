@@ -67,7 +67,15 @@ from ...settings import get_backup_path
     help="Restores the database without confirmation: be careful!",
 )
 def command(
-    database, db_override, host_override, port_override, pg_home, filename, jobs, directory, no_confirm
+    database,
+    db_override,
+    host_override,
+    port_override,
+    pg_home,
+    filename,
+    jobs,
+    directory,
+    no_confirm,
 ):
     """
     Django management command to restore a PostgreSQL database.
