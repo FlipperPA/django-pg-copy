@@ -61,11 +61,10 @@ from ...settings import get_backup_path
     help="The directory to restore. Overrides the --file parameter.",
 )
 @click.option(
-    "--drop-owned",
+    "--drop/--no-drop",
     "drop_owned",
-    is_flag=True,
     default=True,
-    help="Restores the database without confirmation: be careful!",
+    help="Drops objects in the target database before restoring to avoid errors.",
 )
 @click.option(
     "--no-confirm",
