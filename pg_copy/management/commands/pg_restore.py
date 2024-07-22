@@ -62,7 +62,7 @@ from ...settings import get_backup_path
 )
 @click.option(
     "--drop/--no-drop",
-    "drop_owned",
+    "drop",
     default=True,
     help="Drops objects in the target database before restoring to avoid errors.",
 )
@@ -81,7 +81,7 @@ def command(
     filename,
     jobs,
     directory,
-    drop_owned,
+    drop,
     no_confirm,
 ):
     """
@@ -173,7 +173,7 @@ def command(
 
         try:
             DB_USER = settings.DATABASES[database]["USER"]
-            if drop_owned:
+            if drop:
                 subprocess.check_output(
                     f"{psql} -h {host} -U {DB_USER} -d {db} {port_cmd} "
                     f'-c "SET ROLE {DB_USER}; DROP OWNED BY {DB_USER};"',
