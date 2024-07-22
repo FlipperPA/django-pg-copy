@@ -115,14 +115,10 @@ These may be errors from extensions that aren't used, or warnings about default 
 ## Release Notes
 
 [Release notes are available on GitHub](https://github.com/FlipperPA/django-pg-copy/releases).
-## Maintainer
 
-* [Timothy Allen](https://github.com/FlipperPA) at [The Wharton School](https://github.com/wharton)
+## Maintainer and Contributors
 
-This package is maintained by the staff of [Wharton Research Data Services](https://wrds.wharton.upenn.edu/). We are thrilled that [The Wharton School](https://www.wharton.upenn.edu/) allows us a certain amount of time to contribute to open-source projects. We add features as they are necessary for our projects, and try to keep up with Issues and Pull Requests as best we can. Due to constraints of time (our full time jobs!), Feature Requests without a Pull Request may not be implemented, but we are always open to new ideas and grateful for contributions and our package users.
+* [Our Wonderful Contributors on GitHub](https://github.com/FlipperPA/django-pg-copy/graphs/contributors)
+* Maintainer: [Timothy Allen](https://github.com/FlipperPA) at [The Wharton School](https://github.com/wharton)
 
-## Contributors
-
-* Alex Malek (https://github.com/amalek215)
-* Noel Victor (https://github.com/noeldvictor)
-* Ryan Sullivan (https://github.com/rgs258)
+This package is maintained by the staff of [Wharton Research Data Services](https://wrds.wharton.upenn.edu/). We are thrilled that [The Wharton School](https://www.wharton.upenn.edu/) allows us to contribute to open-source projects. We add features as they are necessary for our projects, and try to keep up with Issues and Pull Requests as best we can. Due to constraints of time (our full time jobs!), Feature Requests without a Pull Request may not be implemented, but we are always open to new ideas and grateful for both contributors and users.
