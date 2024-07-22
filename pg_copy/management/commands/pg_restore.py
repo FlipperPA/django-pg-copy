@@ -61,6 +61,13 @@ from ...settings import get_backup_path
     help="The directory to restore. Overrides the --file parameter.",
 )
 @click.option(
+    "--drop-owned",
+    "drop_owned",
+    is_flag=True,
+    default=True,
+    help="Restores the database without confirmation: be careful!",
+)
+@click.option(
     "--no-confirm",
     "no_confirm",
     is_flag=True,
@@ -75,6 +82,7 @@ def command(
     filename,
     jobs,
     directory,
+    drop_owned,
     no_confirm,
 ):
     """
@@ -165,16 +173,17 @@ def command(
         os.environ["PGPASSWORD"] = settings.DATABASES[database]["PASSWORD"]
 
         try:
-            subprocess.check_output(
-                f'{psql} -h {host} {port_cmd} -U {settings.DATABASES[database]["USER"]} -d {db} '
-                f'-c "SET ROLE {settings.DATABASES[database]["USER"]}; '
-                f'DROP OWNED BY {settings.DATABASES[database]["USER"]};"',
-                shell=True,
-            )
+            DB_USER = settings.DATABASES[database]["USER"]
+            if drop_owned:
+                subprocess.check_output(
+                    f"{psql} -h {host} -U {DB_USER} -d {db} {port_cmd} "
+                    f'-c "SET ROLE {DB_USER}; DROP OWNED BY {DB_USER};"',
+                    shell=True,
+                )
 
             subprocess.check_output(
-                f"{pg_restore} -c -O -x --if-exists -h {host} {port_cmd} -d {db} --jobs {jobs} "
-                f"""-U {settings.DATABASES[database]["USER"]} {restore}""",
+                f"{pg_restore} -c -O -x --if-exists -h {host} -d {db} --jobs {jobs} "
+                f"{port_cmd} -U {DB_USER} {restore}",
                 shell=True,
             )
             click.secho("The database has been restored.", fg="green")
