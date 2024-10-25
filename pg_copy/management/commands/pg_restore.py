@@ -173,7 +173,14 @@ def command(
 
         try:
             DB_USER = settings.DATABASES[database]["USER"]
-            if drop:
+
+            if DB_USER == "postgres":
+                print(
+                    "WARNING! User is set to 'postgres'. This is a bad practice, as the "
+                    "'postgres' role is the default superuser account in PostgreSQL. "
+                    "Not dropping any owned objects before the restore for safety."
+                )
+            elif drop:
                 subprocess.check_output(
                     f"{psql} -h {host} -U {DB_USER} -d {db} {port_cmd} "
                     f'-c "SET ROLE {DB_USER}; DROP OWNED BY {DB_USER};"',
