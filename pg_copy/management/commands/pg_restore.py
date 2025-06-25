@@ -67,6 +67,12 @@ from ...settings import get_backup_path
     help="Drops objects in the target database before restoring to avoid errors.",
 )
 @click.option(
+    "--cascade/--no-cascade",
+    "cascade",
+    default=False,
+    help="If --drop is set, passes the --cascade option to the DROP OWNED BY command. ",
+)
+@click.option(
     "--no-confirm",
     "no_confirm",
     is_flag=True,
@@ -82,6 +88,7 @@ def command(
     jobs,
     directory,
     drop,
+    cascade,
     no_confirm,
 ):
     """
@@ -175,26 +182,48 @@ def command(
             DB_USER = settings.DATABASES[database]["USER"]
 
             if DB_USER == "postgres":
-                print(
+                click.secho(
                     "WARNING! User is set to 'postgres'. This is a bad practice, as the "
                     "'postgres' role is the default superuser account in PostgreSQL. "
-                    "Not dropping any owned objects before the restore for safety."
+                    "Not dropping any owned objects before the restore for safety.",
+                    fg="yellow",
                 )
             elif drop:
-                subprocess.check_output(
+                drop_command = (
                     f"{psql} -h {host} -U {DB_USER} -d {db} {port_cmd} "
-                    f'-c "SET ROLE {DB_USER}; DROP OWNED BY {DB_USER};"',
-                    shell=True,
+                    f'-c "SET ROLE {DB_USER}; DROP OWNED BY {DB_USER} '
+                    f'{"CASCADE" if cascade else ""};"'
                 )
+                click.secho(
+                    f"Dropping all objects owned by '{DB_USER}' in database '{db}' on "
+                    f"host '{host}:{port}' before restoring.",
+                    fg="yellow",
+                )
+                click.secho(
+                    f"Command to drop owned objects: {drop_command}",
+                    fg="white",
+                    bold=True,
+                )
+                subprocess.check_output(drop_command, shell=True, )
 
-            subprocess.check_output(
+            restore_command = (
                 f"{pg_restore} -c -O -x --if-exists -h {host} -d {db} --jobs {jobs} "
-                f"{port_cmd} -U {DB_USER} {restore}",
-                shell=True,
+                f"{port_cmd} -U {DB_USER} {restore}"
             )
+            click.secho(
+                f"Restoring database '{db}' on host '{host}:{port}'.",
+                fg="yellow",
+            )
+            click.secho(
+                f"Command to restore database: {restore_command}",
+                fg="white",
+                bold=True,
+            )
+            subprocess.check_output(restore_command, shell=True, )
+
             click.secho("The database has been restored.", fg="green")
         except subprocess.CalledProcessError as e:
-            print(e)
+            click.secho(e, fg="red")
             sys.exit(e.returncode)
         finally:
             os.environ["PGPASSWORD"] = ""
