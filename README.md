@@ -35,6 +35,7 @@ It is also recommended to add this path to your `.gitignore` file, if the path f
 
 ### Restore Only Parameters for `pg_restore`
 
+* `--cascade`: Performs a `CASCADE` during the default `DROP OWNED BY` operation.
 * `--no-drop`: Restores the database without performing a `DROP OWNED BY`.
 * `--no-confirm`: Restores the database without confirmation: be careful! DON'T OVERWRITE YOUR PROD DATABASE! (Ask me how I know.)
 
