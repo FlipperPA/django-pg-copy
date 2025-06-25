@@ -204,7 +204,10 @@ def command(
                     fg="white",
                     bold=True,
                 )
-                subprocess.check_output(drop_command, shell=True, )
+                subprocess.check_output(
+                    drop_command,
+                    shell=True,
+                )
 
             restore_command = (
                 f"{pg_restore} -c -O -x --if-exists -h {host} -d {db} --jobs {jobs} "
@@ -219,7 +222,10 @@ def command(
                 fg="white",
                 bold=True,
             )
-            subprocess.check_output(restore_command, shell=True, )
+            subprocess.check_output(
+                restore_command,
+                shell=True,
+            )
 
             click.secho("The database has been restored.", fg="green")
         except subprocess.CalledProcessError as e:
