@@ -121,13 +121,16 @@ def command(
 
     if jobs:
         click.secho(
-            f"Backing up database '{db}' on host '{host}' to directory '{directory}' "
-            f"with {jobs} parallel processes..."
+            f"Backing up database '{db}' on host '{host}:{port}' to directory "
+            f"'{directory}' with {jobs} parallel processes...",
+            fg="yellow",
         )
         backup = f"--format=directory --file={directory} --jobs={jobs}"
     else:
         click.secho(
-            f"Backing up database '{db}' on host '{host}' to file '{filename}'..."
+            f"Backing up database '{db}' on host '{host}:{port}' to file "
+            f"'{filename}'...",
+            fg="yellow",
         )
         backup = f"--format=custom --file={filename}"
 
@@ -143,13 +146,17 @@ def command(
             f"""-U {settings.DATABASES[database]["USER"]} """
             f"{ignore_table_cmd} {exclude_table_cmd} {db}"
         )
-
-        print(backup_command)
+        click.secho(
+            f"Command to backup database: {backup_command}",
+            fg="white",
+            bold=True,
+        )
         subprocess.check_output(
             backup_command,
             shell=True,
         )
+        click.secho("Backup completed successfully.", fg="green")
     except subprocess.CalledProcessError as e:
-        print(e)
+        click.secho(e)
         sys.exit(e.returncode)
     os.environ["PGPASSWORD"] = ""
